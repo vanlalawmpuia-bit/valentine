@@ -1,310 +1,153 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Comic Sans MS', cursive, sans-serif;
-      background: radial-gradient(circle at top left, #ffe6f0, #ffccdd);
-      overflow: hidden;
-      text-align: center;
-      color: #800040;
-      height: 100vh;
-      position: relative;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For Florence ❤️</title>
+    <style>
+        body {
+            background-color: #fff0f3;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            text-align: center;
+        }
 
-    #hearts-container, #sparkle-container {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      left: 0;
-      pointer-events: none;
-      z-index: 0;
-    }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(255, 77, 109, 0.2);
+            z-index: 10;
+            max-width: 90%;
+            transition: all 0.3s ease;
+        }
 
-    .heart {
-      position: absolute;
-      width: 30px;
-      height: 30px;
-      background: url('https://i.ibb.co/N7hZjx1/pixel-heart.png') no-repeat center;
-      background-size: contain;
-      animation: float 5s linear infinite;
-    }
+        h1 {
+            color: #ff4d6d;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
 
-    @keyframes float {
-      0% { transform: translateY(100vh) rotate(0deg); opacity: 1; }
-      100% { transform: translateY(-50px) rotate(360deg); opacity: 0; }
-    }
+        #gif-display {
+            width: 280px;
+            height: 280px;
+            object-fit: cover;
+            border-radius: 20px;
+            margin-bottom: 20px;
+        }
 
-    .sparkle {
-      position: absolute;
-      width: 10px;
-      height: 10px;
-      background-color: pink;
-      border-radius: 50%;
-      animation: sparkle 2s linear infinite;
-    }
+        .buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+            min-height: 80px;
+        }
 
-    @keyframes sparkle {
-      0% {opacity:0;}
-      50% {opacity:1; transform: scale(1.5);}
-      100% {opacity:0;}
-    }
+        button {
+            padding: 15px 35px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
 
-    /* Envelope and flap animation */
-    #envelope-container {
-      position: relative;
-      display: inline-block;
-      margin-top: 100px;
-      cursor: pointer;
-      z-index: 2;
-    }
+        #yesBtn {
+            background-color: #ff4d6d;
+            color: white;
+            box-shadow: 0 5px 15px rgba(255, 77, 109, 0.4);
+            z-index: 11;
+        }
 
-    #envelope {
-      width: 150px;
-      display: block;
-      z-index: 1;
-    }
+        #noBtn {
+            background-color: #adb5bd;
+            color: white;
+            position: absolute; /* Needed for jumping */
+            z-index: 12;
+        }
 
-    #flap {
-      width: 150px;
-      height: 75px;
-      background: #ff3366;
-      position: absolute;
-      top: 0;
-      left: 0;
-      transform-origin: top;
-      transition: transform 0.7s;
-      border-top-left-radius: 10px;
-      border-top-right-radius: 10px;
-      z-index: 2;
-    }
+        .heart {
+            position: fixed;
+            color: #ff4d6d;
+            user-select: none;
+            pointer-events: none;
+            z-index: 1;
+            animation: floatUp 4s linear forwards;
+        }
 
-    #valentine-message, #final-message {
-      display: none;
-      margin-top: 50px;
-      z-index: 2;
-      position: relative;
-    }
-
-    .btn-yes {
-      display: inline-block;
-      padding: 15px 35px;
-      font-size: 22px;
-      color: white;
-      background: linear-gradient(135deg, #ff6699, #ff3366);
-      border-radius: 50px;
-      text-decoration: none;
-      margin: 20px;
-      box-shadow: 0 5px 15px rgba(255,51,102,0.4);
-      transition: transform 0.2s;
-      position: relative;
-      z-index: 3;
-    }
-    .btn-yes:hover { transform: scale(1.1); }
-
-    .btn-no {
-      display: inline-block;
-      padding: 15px 35px;
-      font-size: 22px;
-      color: white;
-      background-color: #ccc;
-      border: none;
-      border-radius: 50px;
-      cursor: pointer;
-      margin: 20px;
-      position: relative;
-    }
-
-    #hello-kitty {
-      position: absolute;
-      bottom: 0;
-      right: 10px;
-      width: 150px;
-      z-index: 1;
-      opacity: 0.7;
-      pointer-events: none;
-    }
-
-    /* Confetti */
-    .confetti {
-      position: absolute;
-      width: 10px;
-      height: 10px;
-      opacity: 0.8;
-      animation: confettiFall linear infinite;
-    }
-    @keyframes confettiFall {
-      0% {transform: translateY(-10px) rotate(0deg);}
-      100% {transform: translateY(100vh) rotate(360deg);}
-    }
-
-    /* Love hand sign */
-    .hand-sign {
-      position: absolute;
-      width: 50px;
-      height: 50px;
-      pointer-events: none;
-      background: url('https://i.ibb.co/sKQWv3F/love-hand.png') no-repeat center;
-      background-size: contain;
-      animation: handFloat 6s linear infinite;
-      opacity: 0.9;
-    }
-    @keyframes handFloat {
-      0% { transform: translateY(100vh) rotate(0deg); opacity:0; }
-      10% { opacity:1; }
-      100% { transform: translateY(-50px) rotate(360deg); opacity:0; }
-    }
-
-  </style>
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+    </style>
 </head>
 <body>
 
-  <!-- Floating hearts -->
-  <div id="hearts-container"></div>
-  <div id="sparkle-container"></div>
-
-  <!-- Hello Kitty GIF -->
-  <img id="hello-kitty" src="https://media.giphy.com/media/3ohzdIuqJoo8QdKlnW/giphy.gif" alt="Hello Kitty">
-
-  <!-- Envelope -->
-  <div id="envelope-container">
-    <div id="flap"></div>
-    <img id="envelope" src="https://i.ibb.co/JxFz3Pj/envelope.png" alt="Envelope">
-  </div>
-
-  <!-- Valentine message -->
-  <div id="valentine-message">
-    <h1>💌 Will You Be My Valentine, Florence? 💌</h1>
-    <p style="font-size: 20px; max-width: 500px; margin: auto;">
-      My heart beats only for you.  
-      You make every day brighter and sweeter. 💖
-    </p>
-
-    <div>
-      <a href="#" class="btn-yes" id="yes-button">❤️ YES ❤️</a>
-      <button class="btn-no">❌ NO ❌</button>
+    <div class="container" id="mainCard">
+        <h1 id="question">Florence, will you be my Valentine? 🥺</h1>
+        <img id="gif-display" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueGZ3bmZqZzR4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4JnZXA9MTYmZ3c9MTY/cLS1cfxvGOPVpf9g3y/giphy.gif" alt="Begging Puppy">
+        
+        <div class="buttons">
+            <button id="yesBtn">YES!</button>
+            <button id="noBtn">No</button>
+        </div>
     </div>
-  </div>
 
-  <!-- Final message -->
-  <div id="final-message">
-    <h1>💖 Happy Valentine’s Day! 💖</h1>
-    <p style="font-size: 20px; max-width: 500px; margin: auto;">
-      I can’t wait to see you on February 14 with a little surprise… 💌  
-      You make my world brighter and my heart fuller every day!
-    </p>
-  </div>
+    <script>
+        const noBtn = document.getElementById('noBtn');
+        const yesBtn = document.getElementById('yesBtn');
+        const gif = document.getElementById('gif-display');
+        const question = document.getElementById('question');
+        let yesScale = 1;
 
-  <script>
-    // Floating hearts
-    const heartsContainer = document.getElementById('hearts-container');
-    function createHeart() {
-      const heart = document.createElement('div');
-      heart.className = 'heart';
-      heart.style.left = Math.random() * window.innerWidth + 'px';
-      heart.style.width = 20 + Math.random() * 20 + 'px';
-      heart.style.height = heart.style.width;
-      heart.style.animationDuration = 3 + Math.random() * 4 + 's';
-      heartsContainer.appendChild(heart);
-      setTimeout(() => heartsContainer.removeChild(heart), 7000);
-    }
-    setInterval(createHeart, 300);
+        function moveButton() {
+            // Calculate random position
+            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
+            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+            
+            noBtn.style.left = `${x}px`;
+            noBtn.style.top = `${y}px`;
 
-    // Sparkles
-    const sparkleContainer = document.getElementById('sparkle-container');
-    for(let i=0; i<20; i++){
-      const sparkle = document.createElement('div');
-      sparkle.className = 'sparkle';
-      sparkle.style.top = Math.random() * window.innerHeight + 'px';
-      sparkle.style.left = Math.random() * window.innerWidth + 'px';
-      sparkleContainer.appendChild(sparkle);
-    }
+            // Every time she misses, the YES button gets bigger!
+            yesScale += 0.15;
+            yesBtn.style.transform = `scale(${yesScale})`;
+        }
 
-    // Envelope flap animation
-    const envelopeContainer = document.getElementById('envelope-container');
-    const flap = document.getElementById('flap');
-    const valentineMessage = document.getElementById('valentine-message');
+        noBtn.addEventListener('mouseover', moveButton);
+        noBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault(); // Prevents clicking on mobile
+            moveButton();
+        });
 
-    envelopeContainer.addEventListener('click', () => {
-      flap.style.transform = 'rotateX(-180deg)';
-      setTimeout(() => {
-        envelopeContainer.style.display = 'none';
-        valentineMessage.style.display = 'block';
-      }, 700);
-    });
+        yesBtn.addEventListener('click', () => {
+            question.innerHTML = "YAY! Love you, Florence! ❤️";
+            gif.src = "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueGZ3bmZqZzR4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4JnZXA9MTYmZ3c9MTY/l41lI4bS0K2Oq0qY8/giphy.gif";
+            noBtn.style.display = 'none';
+            yesBtn.style.transform = 'scale(1)';
+            
+            // Start heart shower
+            setInterval(createHeart, 150);
+        });
 
-    // No button runs away
-    const noButton = document.querySelector('.btn-no');
-    noButton.addEventListener('mouseenter', () => {
-      const x = Math.random() * (window.innerWidth - noButton.offsetWidth);
-      const y = Math.random() * (window.innerHeight - noButton.offsetHeight);
-      noButton.style.position = 'absolute';
-      noButton.style.left = x + 'px';
-      noButton.style.top = y + 'px';
-    });
-
-    // Yes button → final message + confetti + love hands + heart shape
-    const yesButton = document.getElementById('yes-button');
-    const finalMessage = document.getElementById('final-message');
-    yesButton.addEventListener('click', (e) => {
-      e.preventDefault();
-      valentineMessage.style.display = 'none';
-      finalMessage.style.display = 'block';
-      launchConfetti(50);
-      launchLoveHands(10);
-      createHeartShape();
-    });
-
-    // Confetti
-    function launchConfetti(count){
-      for(let i=0; i<count; i++){
-        const confetti = document.createElement('div');
-        confetti.className = 'confetti';
-        confetti.style.backgroundColor = ['#ff6699','#ff3366','#ff99cc','#ffc0cb'][Math.floor(Math.random()*4)];
-        confetti.style.left = Math.random() * window.innerWidth + 'px';
-        confetti.style.animationDuration = 2 + Math.random() * 3 + 's';
-        document.body.appendChild(confetti);
-        setTimeout(() => document.body.removeChild(confetti), 5000);
-      }
-    }
-
-    // Love hand signs
-    function launchLoveHands(count){
-      for(let i=0; i<count; i++){
-        const hand = document.createElement('div');
-        hand.className = 'hand-sign';
-        hand.style.left = Math.random() * window.innerWidth + 'px';
-        hand.style.animationDuration = 4 + Math.random() * 3 + 's';
-        document.body.appendChild(hand);
-        setTimeout(() => document.body.removeChild(hand), 6000);
-      }
-    }
-
-    // Create a heart shape with hearts
-    function createHeartShape(){
-      const heartPoints = [];
-      const centerX = window.innerWidth/2;
-      const centerY = window.innerHeight/2 - 50;
-      const scale = 15;
-      for(let t=-Math.PI; t<Math.PI; t+=0.1){
-        const x = 16*Math.pow(Math.sin(t),3)*scale + centerX;
-        const y = -(13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t))*scale + centerY;
-        heartPoints.push({x,y});
-      }
-      heartPoints.forEach(pt => {
-        const heart = document.createElement('div');
-        heart.className = 'heart';
-        heart.style.left = pt.x + 'px';
-        heart.style.top = pt.y + 'px';
-        heart.style.width = '20px';
-        heart.style.height = '20px';
-        heartsContainer.appendChild(heart);
-        setTimeout(() => heartsContainer.removeChild(heart), 7000);
-      });
-    }
-
-  </script>
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.top = '100vh';
+            heart.style.fontSize = (Math.random() * 20 + 20) + 'px';
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 4000);
+        }
+    </script>
 </body>
 </html>
