@@ -1,147 +1,247 @@
-<!DOCTYPE html>
+      <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>For Florence ❤️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@300;500&display=swap" rel="stylesheet">
     <style>
-        body {
-            background-color: #fff0f3;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            overflow: hidden;
-            text-align: center;
+        :root {
+            --primary-pink: #ff85a1;
+            --bg-color: #fff0f3;
+            --rose: #ff4d6d;
         }
 
-        .container {
-            background: white;
+        body {
+            background-color: var(--bg-color);
+            background-image: radial-gradient(#ffb3c1 0.5px, transparent 0.5px);
+            background-size: 20px 20px;
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Quicksand', sans-serif;
+            overflow: hidden;
+        }
+
+        /* 1. ENVELOPE STYLING */
+        .envelope-wrapper {
+            position: relative;
+            cursor: pointer;
+            z-index: 100;
+            transition: transform 0.3s;
+        }
+
+        .envelope-wrapper:hover {
+            transform: scale(1.05);
+        }
+
+        .envelope {
+            position: relative;
+            width: 280px;
+            height: 180px;
+            background: #ffb3c1;
+            border-radius: 0 0 15px 15px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        .envelope::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            z-index: 2;
+            border-left: 140px solid transparent;
+            border-right: 140px solid transparent;
+            border-top: 110px solid #ffccd5;
+            transform-origin: top;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .envelope.open::before {
+            transform: rotateX(180deg);
+            z-index: 0;
+        }
+
+        .heart-seal {
+            position: absolute;
+            top: 45px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 45px;
+            z-index: 3;
+            filter: drop-shadow(0 2px 5px rgba(0,0,0,0.1));
+            transition: opacity 0.3s;
+        }
+
+        .envelope.open .heart-seal {
+            opacity: 0;
+        }
+
+        /* 2. MAIN CONTENT STYLING */
+        #mainCard {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
             padding: 40px;
-            border-radius: 30px;
-            box-shadow: 0 10px 30px rgba(255, 77, 109, 0.2);
+            border-radius: 40px;
+            box-shadow: 0 25px 60px rgba(255, 77, 109, 0.25);
+            text-align: center;
+            max-width: 380px;
+            width: 90%;
+            border: 2px solid white;
             z-index: 10;
-            max-width: 90%;
-            transition: all 0.3s ease;
         }
 
         h1 {
-            color: #ff4d6d;
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-            line-height: 1.2;
+            color: #d63384;
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.4rem;
+            margin-top: 0;
         }
 
         #gif-display {
-            width: 280px;
-            height: 280px;
-            object-fit: cover;
+            width: 100%;
+            max-height: 250px;
+            object-fit: contain;
             border-radius: 20px;
-            margin-bottom: 20px;
+            margin: 20px 0;
         }
 
-        .buttons {
+        .btn-group {
             display: flex;
-            gap: 20px;
             justify-content: center;
+            gap: 20px;
+            min-height: 100px;
             align-items: center;
-            min-height: 80px;
         }
 
         button {
-            padding: 15px 35px;
-            font-size: 1.2rem;
-            font-weight: bold;
-            border: none;
+            padding: 14px 35px;
             border-radius: 50px;
+            border: none;
+            font-size: 1.1rem;
+            font-weight: bold;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         #yesBtn {
-            background-color: #ff4d6d;
+            background: linear-gradient(45deg, #ff4d6d, #ff85a1);
             color: white;
             box-shadow: 0 5px 15px rgba(255, 77, 109, 0.4);
-            z-index: 11;
         }
 
         #noBtn {
-            background-color: #adb5bd;
-            color: white;
-            position: absolute; /* Needed for jumping */
-            z-index: 12;
+            background: #f8f9fa;
+            color: #adb5bd;
+            position: absolute;
+            border: 1px solid #dee2e6;
         }
 
-        .heart {
+        /* 3. ANIMATIONS */
+        .floating-heart {
             position: fixed;
-            color: #ff4d6d;
-            user-select: none;
             pointer-events: none;
             z-index: 1;
             animation: floatUp 4s linear forwards;
         }
 
         @keyframes floatUp {
-            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.8; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .pop-animation {
+            animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
     </style>
 </head>
 <body>
 
-    <div class="container" id="mainCard">
+    <div class="envelope-wrapper" id="envelopeWrapper" onclick="openEnvelope()">
+        <div class="heart-seal">❤️</div>
+        <div class="envelope" id="envelopeBox"></div>
+        <p style="text-align: center; color: #d63384; font-family: 'Dancing Script', cursive; font-size: 1.5rem; margin-top: 20px;">Open me, Florence...</p>
+    </div>
+
+    <div id="mainCard" class="pop-animation">
         <h1 id="question">Florence, will you be my Valentine? 🥺</h1>
-        <img id="gif-display" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueGZ3bmZqZzR4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4JnZXA9MTYmZ3c9MTY/cLS1cfxvGOPVpf9g3y/giphy.gif" alt="Begging Puppy">
+        <img id="gif-display" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueGZ3bmZqZzR4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4JnZXA9MTYmZ3c9MTY/cLS1cfxvGOPVpf9g3y/giphy.gif" alt="Please">
         
-        <div class="buttons">
-            <button id="yesBtn">YES!</button>
+        <div class="btn-group">
+            <button id="yesBtn">Yes!</button>
             <button id="noBtn">No</button>
         </div>
     </div>
 
     <script>
+        const envelope = document.getElementById('envelopeWrapper');
+        const card = document.getElementById('mainCard');
         const noBtn = document.getElementById('noBtn');
         const yesBtn = document.getElementById('yesBtn');
         const gif = document.getElementById('gif-display');
         const question = document.getElementById('question');
+
         let yesScale = 1;
 
-        function moveButton() {
-            // Calculate random position
-            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
-            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+        // Open Envelope Function
+        function openEnvelope() {
+            document.getElementById('envelopeBox').classList.add('open');
+            setTimeout(() => {
+                envelope.style.display = 'none';
+                card.style.display = 'block';
+                // Start background hearts
+                setInterval(spawnHeart, 700);
+            }, 800);
+        }
+
+        // Jumping "No" Button Logic
+        function moveNo() {
+            // Calculate a safe random spot on screen
+            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth - 40) + 20;
+            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight - 40) + 20;
             
             noBtn.style.left = `${x}px`;
             noBtn.style.top = `${y}px`;
-
-            // Every time she misses, the YES button gets bigger!
-            yesScale += 0.15;
+            
+            // Make "Yes" button harder to ignore
+            yesScale += 0.2;
             yesBtn.style.transform = `scale(${yesScale})`;
         }
 
-        noBtn.addEventListener('mouseover', moveButton);
-        noBtn.addEventListener('touchstart', (e) => {
-            e.preventDefault(); // Prevents clicking on mobile
-            moveButton();
-        });
+        noBtn.addEventListener('mouseover', moveNo);
+        noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); moveNo(); });
 
+        // Success Event
         yesBtn.addEventListener('click', () => {
-            question.innerHTML = "YAY! Love you, Florence! ❤️";
+            // Mizo Message
+            question.style.fontSize = "1.6rem";
+            question.innerHTML = "Yes i tih ka ring rengah,<br>naktukah kan in hmu dawn nia,<br>there's a surprise waiting for you! ❤️";
+            
+            // Celebratory GIF
             gif.src = "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueGZ3bmZqZzR4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4JnZXA9MTYmZ3c9MTY/l41lI4bS0K2Oq0qY8/giphy.gif";
+            
+            // Clean up UI
             noBtn.style.display = 'none';
-            yesBtn.style.transform = 'scale(1)';
+            yesBtn.style.display = 'none';
             
             // Start heart shower
-            setInterval(createHeart, 150);
+            setInterval(spawnHeart, 150);
         });
 
-        function createHeart() {
+        // Floating Heart Animation Function
+        function spawnHeart() {
             const heart = document.createElement('div');
-            heart.classList.add('heart');
-            heart.innerHTML = '❤️';
+            heart.classList.add('floating-heart');
+            const icons = ['❤️', '💖', '✨', '🌸', '💘'];
+            heart.innerHTML = icons[Math.floor(Math.random() * icons.length)];
             heart.style.left = Math.random() * 100 + 'vw';
             heart.style.top = '100vh';
             heart.style.fontSize = (Math.random() * 20 + 20) + 'px';
@@ -151,3 +251,4 @@
     </script>
 </body>
 </html>
+  
